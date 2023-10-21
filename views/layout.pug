@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title= title
+    script(src="https://kit.fontawesome.com/7b2d5b8797.js" crossorigin="anonymous")
+    link(href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet")
+    link(rel="stylesheet", href=`/stylesheets/style.css?${cache}`)
+
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+    if hasSocial
+      meta(property="og:image" content=`http://${base}/images/social.png?${cache}`)
+      meta(property="og:image:secure_url" content=`https://${base}/images/social.png?${cache}`)
+  body(id='pg-' + pg)
+    block content
+    script(src="/javascripts/jquery.min.js")
+    script(src=`/javascripts/utils.js?${cache}`)
+    script(src=`/javascripts/script.js?${cache}`)
