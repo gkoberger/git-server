@@ -2,20 +2,20 @@ const NodeGit = require("../lib/nodegit");
 
 module.exports = async (repo, branch, data) => {
   async function listFilesInRepo() {
-    const repository = await NodeGit.Repository.open(repo);
+    const repository = await NodeGit.Repository.openBare(repo);
     //const headCommit = await repository.getHeadCommit();
 
+    console.log(await repository.getBranchCommit('/refs/heads/main'));
 
     const refNames = await repository.getReferenceNames();
+    console.log(refNames);
 
     // Iterate over the reference names
-    console.log("REF NAMES");
     for (const refName of refNames) {
       console.log(refName);
     }
 
     const references = await NodeGit.Reference.list(repository);
-    console.log("REFERENCES", references, repo);
 
     const refName = `refs/heads/${branch || "main"}`;
 
