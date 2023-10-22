@@ -5,7 +5,6 @@ module.exports = async (repo, branch, data) => {
     const repository = await NodeGit.Repository.open(repo);
     //const headCommit = await repository.getHeadCommit();
 
-    const repository = await NodeGit.Repository.open(repo);
     const refName = `refs/heads/${branch || "main"}`;
 
     const ref = await NodeGit.Reference.nameToId(repository, refName);
