@@ -12,13 +12,13 @@ module.exports = async (repo, branch, data) => {
 
     const tree = await commit.getTree();
 
-const refNames = await repository.getReferenceNames();
+    const refNames = await repository.getReferenceNames();
 
-// Iterate over the reference names
+    // Iterate over the reference names
     console.log("REF NAMES");
-for (const refName of refNames) {
-  console.log(refName);
-}
+    for (const refName of refNames) {
+      console.log(refName);
+    }
 
     function convertToSidebar(paths) {
       let result = paths.reduce((res, path) => {
