@@ -5,12 +5,6 @@ module.exports = async (repo, branch, data) => {
     const repository = await NodeGit.Repository.open(repo);
     //const headCommit = await repository.getHeadCommit();
 
-    const refName = `refs/heads/${branch || "main"}`;
-
-    const ref = await NodeGit.Reference.nameToId(repository, refName);
-    const commit = await repository.getCommit(ref);
-
-    const tree = await commit.getTree();
 
     const refNames = await repository.getReferenceNames();
 
@@ -19,6 +13,14 @@ module.exports = async (repo, branch, data) => {
     for (const refName of refNames) {
       console.log(refName);
     }
+
+    const refName = `refs/heads/${branch || "main"}`;
+
+    const ref = await NodeGit.Reference.nameToId(repository, refName);
+    const commit = await repository.getCommit(ref);
+
+    const tree = await commit.getTree();
+
 
     function convertToSidebar(paths) {
       let result = paths.reduce((res, path) => {
