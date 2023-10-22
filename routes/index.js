@@ -16,7 +16,7 @@ router.post("/git", (req, res, next) => {
   }
 });
 
-router.get('/', () => {
+router.get('/', (req, res) => {
   res.json({ success: true });
 });
 
