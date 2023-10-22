@@ -16,6 +16,10 @@ router.post("/git", (req, res, next) => {
   }
 });
 
+router.get('/', () => {
+  res.json({ success: true });
+});
+
 router.post("/exec", (req, res, next) => {
   const repo = `../../repos/${req.body.repo}`;
   getSidebar(cwd, data);
