@@ -9,6 +9,7 @@
   "dependencies": {
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",
+    "nodegit": "~0.27.0",
     "debug": "~2.6.9",
     "express": "~4.14.0",
     "frontmatter": "^0.0.3",
