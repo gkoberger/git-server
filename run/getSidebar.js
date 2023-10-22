@@ -15,7 +15,7 @@ module.exports = async (repo, branch, data) => {
     }
 
     const references = await NodeGit.Reference.list(repository);
-    console.log("REFERENCES", references);
+    console.log("REFERENCES", references, repo);
 
     const refName = `refs/heads/${branch || "main"}`;
 
