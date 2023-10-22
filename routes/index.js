@@ -5,45 +5,31 @@ const { execSync } = require("child_process");
 var YAML = require("yaml");
 var frontmatter = require("frontmatter");
 
-router.post("/git", (req, res, next) => {
-  const repo = `../../repos/${req.body.repo}`;
-  const exec = _exec(repo);
-  try {
-    const out = exec(req.body.command);
-    res.json({ success: true });
-  } catch (e) {
-    res.json({ success: false });
-  }
-});
-
 router.get('/', (req, res) => {
   res.json({ success: true });
 });
 
-router.post("/exec", (req, res, next) => {
-  const repo = `../../repos/${req.body.repo}`;
-  getSidebar(cwd, data);
+/* Expects:
+ * {
+ *   repo: ...
+ *   branch: ...
+ *   script: ...
+ *   data: ...
+ * }
+ */
+
+router.post("/run", async (req, res, next) => {
+  const repo = `../repositories/${req.body.repo}`;
+  const script = require(`../run/${req.body.script}`)
+  const out = await script(repo, req.body.branch, req.body.data);
+  res.json(out);
 });
 
-function getSidebar(cwd, data) {
-}
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-/* GET home page. */
+/*
 router.post("/:repo/init", (req, res, next) => {
   const repo = `../../repos/${req.params.repo}`;
   const exec = _exec(repo);
@@ -124,5 +110,6 @@ function createFrontmatter(meta, content) {
   const y = YAML.stringify(meta);
   return `${y}\n------------${content}`;
 }
+*/
 
 module.exports = router;
