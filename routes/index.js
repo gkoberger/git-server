@@ -5,7 +5,7 @@ const { execSync } = require("child_process");
 var YAML = require("yaml");
 var frontmatter = require("frontmatter");
 
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   res.json({ success: true });
 });
 
@@ -20,14 +20,17 @@ router.get('/', (req, res) => {
 
 router.post("/run", async (req, res, next) => {
   const repo = `../repositories/${req.body.repo}`;
-  const script = require(`../run/${req.body.script}`)
+  const script = require(`../run/${req.body.script}`);
   const out = await script(repo, req.body.branch, req.body.data);
   res.json(out);
 });
 
-
-
-
+router.post("/deploy/:repo", async (req, res, next) => {
+  const repo = `../repositories/${req.params.repo}`;
+  const script = require(`../run/deploy`);
+  const out = await script(repo, 'main');
+  res.json(out);
+});
 
 /*
 router.post("/:repo/init", (req, res, next) => {

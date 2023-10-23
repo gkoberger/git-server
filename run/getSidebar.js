@@ -5,7 +5,6 @@ module.exports = async (repo, branch, data) => {
     const repository = await NodeGit.Repository.openBare(repo);
     //const headCommit = await repository.getHeadCommit();
 
-
     const references = await NodeGit.Reference.list(repository);
     console.log(references);
 
@@ -16,32 +15,33 @@ module.exports = async (repo, branch, data) => {
 
     const tree = await commit.getTree();
 
+    function convertToSidebar(array) {
+      const result = {};
 
-    function convertToSidebar(paths) {
-      let result = paths.reduce((res, path) => {
-        const splitPath = path.split("/");
-        let currentLevel = res;
+      array.forEach((path) => {
+        const parts = path.split("/");
+        let currentLevel = result;
 
-        for (let i = 0; i < splitPath.length; i++) {
-          if (i === splitPath.length - 1) {
-            // File level, push the file
-            if (splitPath[i - 1]) {
-              if (!Array.isArray(currentLevel[splitPath[i - 1]])) {
-                currentLevel[splitPath[i - 1]] = [];
-              }
-              currentLevel[splitPath[i - 1]].push(splitPath[i]);
+        parts.forEach((part, index) => {
+          // If we are at the penultimate part, make the last part an array in the object
+          if (index === parts.length - 2) {
+            if (!currentLevel[part]) {
+              currentLevel[part] = [parts[index + 1]];
+            } else {
+              currentLevel[part].push(parts[index + 1]);
             }
-          } else {
-            // Directory level, create an object if it doesn't exist
-            if (!currentLevel[splitPath[i]]) {
-              currentLevel[splitPath[i]] = {};
-            }
-            currentLevel = currentLevel[splitPath[i]];
           }
-        }
 
-        return res;
-      }, {});
+          // Else continue building the object
+          else if (!currentLevel[part]) {
+            if (part.match(/md/)) return;
+            currentLevel[part] = {};
+          }
+
+          currentLevel = currentLevel[part];
+        });
+      });
+
       return result;
     }
 
