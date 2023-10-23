@@ -14,6 +14,7 @@ module.exports = async (repo, branch, data) => {
     await remote.push([`refs/heads/${branch}:refs/heads/${branch}`], {
       callbacks: {
         credentials: function (url, userName) {
+          /*
           try {
             console.log(NodeGit.Cred.sshKeyNew(
                             userName,
@@ -30,6 +31,7 @@ module.exports = async (repo, branch, data) => {
           } catch(e) {
             console.log('oh no', e);
           }
+          */
           return NodeGit.Credential.sshKeyFromAgent(userName);
         },
       },
