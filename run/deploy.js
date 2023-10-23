@@ -15,13 +15,13 @@ module.exports = async (repo, branch, data) => {
       callbacks: {
         credentials: function (url, userName) {
           try {
-            console.log(Git.Cred.sshKeyNew(
+            console.log(NodeGit.Cred.sshKeyNew(
                             userName,
                             '~/.ssh/git_rsa.pub',     // Replace with your public key path
                             '~/.ssh/git_rsa',        // Replace with your private key path
                             ''                    // Replace with your key's passphrase, or '' if no passphrase
                         ));
-                        return Git.Cred.sshKeyNew(
+                        return NodeGit.Cred.sshKeyNew(
                             userName,
                             '~/.ssh/git_rsa.pub',     // Replace with your public key path
                             '~/.ssh/git_rsa',        // Replace with your private key path
