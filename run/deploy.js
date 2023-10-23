@@ -28,7 +28,7 @@ module.exports = async (repo, branch, data) => {
                             ''                    // Replace with your key's passphrase, or '' if no passphrase
                         );
           } catch(e) {
-            console.log('oh no');
+            console.log('oh no', e);
           }
           return NodeGit.Credential.sshKeyFromAgent(userName);
         },
