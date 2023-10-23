@@ -25,9 +25,9 @@ router.post("/run", async (req, res, next) => {
   res.json(out);
 });
 
-router.post("/deploy/:repo", async (req, res, next) => {
+router.post("/pull/:repo", async (req, res, next) => {
   const repo = `../repositories/${req.params.repo}`;
-  const script = require(`../run/deploy`);
+  const script = require(`../run/pull`);
   const out = await script(repo, 'main');
   res.json(out);
 });
