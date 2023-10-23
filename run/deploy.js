@@ -14,15 +14,13 @@ module.exports = async (repo, branch, data) => {
     await remote.push([`refs/heads/${branch}:refs/heads/${branch}`], {
       callbacks: {
         credentials: function (url, userName) {
-          /*
                         return Git.Cred.sshKeyNew(
                             userName,
-                            '/path/to/your/public/key.pub',     // Replace with your public key path
-                            '/path/to/your/private/key',        // Replace with your private key path
-                            'yourPassphrase'                    // Replace with your key's passphrase, or '' if no passphrase
+                            '~/.ssh/git_rsa.pub',     // Replace with your public key path
+                            '~/.ssh/git_rsa',        // Replace with your private key path
+                            ''                    // Replace with your key's passphrase, or '' if no passphrase
                         );
-          */
-          return NodeGit.Cred.sshKeyFromAgent(userName);
+          return NodeGit.Credential.sshKeyFromAgent(userName);
         },
       },
     });
