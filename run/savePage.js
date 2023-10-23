@@ -24,17 +24,21 @@ module.exports = async (repo, branch, data) => {
   // Update the tree entry with the new blob id
   treeEntry.id = newBlobId;
 
-  var author = NodeGit.Signature.create(
+  var author = NodeGit.Signature.now(
     "Greg",
     "gkoberger@gmail.com",
+    /*
     123456789,
     60
+    */
   );
-  var committer = NodeGit.Signature.create(
+  var committer = NodeGit.Signature.now(
     "Greg",
     "gkoberger@gmail.com",
+    /*
     987654321,
     90
+    */
   );
 
   // Break down path into directory parts
