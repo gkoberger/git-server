@@ -1,95 +1,24 @@
-const NodeGit = require("../lib/nodegit");
+// https://docs.gitlab.com/ee/api/repository_files.html#update-existing-file-in-repository
 const frontmatter = require('gray-matter');
 
 module.exports = async (repo, branch, data) => {
-  const repository = await NodeGit.Repository.openBare(repo);
-
-  const refName = `refs/heads/${branch || "main"}`;
-
-  const ref = await NodeGit.Reference.nameToId(repository, refName);
-  const commit = await repository.getCommit(ref);
-
-  let tree = await commit.getTree();
-
   const filePath = `guides/${data.category}/${data.page}`;
 
-  // Update or modify the tree contents
-  const treeEntry = tree.entryByPath(filePath);
+  const page = await fetch(`http://159.223.168.222/api/v4/projects/${encodeURIComponent(repo)}/repository/files/${encodeURIComponent(filePath)}?ref=${branch}`, {
+    method: 'PUT',
+    headers: {
+      "PRIVATE-TOKEN": process.env.GITLAB_PRIVATE_TOKEN,
+      'content-type': "application/json",
+    },
+    body: JSON.stringify({
+      branch,
+      author_name: 'Dom Harrington',
+      author_email: 'dom@readme.io',
+      commit_message: 'Updated file',
+      content: frontmatter.stringify(data.content, data.data),
+    })
+  }).then(res => res.json());
 
-  // Create a new blob with the updated content
-  const newBlobId = await repository.createBlobFromBuffer(
-    Buffer.from(frontmatter.stringify(data.content, data.data))
-  );
-
-  // Update the tree entry with the new blob id
-  treeEntry.id = newBlobId;
-
-  var author = NodeGit.Signature.now(
-    "Greg",
-    "gkoberger@gmail.com",
-    /*
-    123456789,
-    60
-    */
-  );
-  var committer = NodeGit.Signature.now(
-    "Greg",
-    "gkoberger@gmail.com",
-    /*
-    987654321,
-    90
-    */
-  );
-
-  // Break down path into directory parts
-  //
-  const pathParts = filePath.split("/");
-
-  // The filename is the last component of the path
-  let filename = pathParts.pop();
-
-  // Recursive function to handle each level of the path
-  const processTreeEntry = async (pathParts, tree) => {
-    if (pathParts.length === 0) {
-      let builder = await NodeGit.Treebuilder.create(repository, tree);
-      builder.insert(filename, newBlobId, NodeGit.TreeEntry.FILEMODE.BLOB);
-      return builder.write();
-    } else {
-      let part = pathParts.shift();
-      let entry;
-      try {
-        entry = await tree.entryByName(part); // Will throw if 'part' doesn't exist
-      } catch (err) {
-        const builder = await NodeGit.Treebuilder.create(repository, tree);
-        const newTreeOid = await builder.write();
-        entry = builder.insert(
-          part,
-          newTreeOid,
-          NodeGit.TreeEntry.FILEMODE.TREE
-        );
-      }
-      const subTree = await repository.getTree(entry.oid());
-      const newOid = await processTreeEntry(pathParts, subTree);
-      const builder = await NodeGit.Treebuilder.create(repository, tree);
-      builder.insert(part, newOid, NodeGit.TreeEntry.FILEMODE.TREE);
-      return builder.write();
-    }
-  };
-
-  // Create the new tree
-  const newTreeOid = await processTreeEntry(pathParts, tree);
-  const newTree = await repository.getTree(newTreeOid);
-
-  // Create a new commit
-  const newCommitId = await repository.createCommit(
-    `refs/heads/${branch}`,
-    author,
-    committer,
-    "Updated file",
-    newTree,
-    [commit]
-  );
-
-  require('./deploy')(repo, branch);
+  // require('./deploy')(repo, branch);
   return true;
 };

@@ -7,6 +7,10 @@ const stylus = require('stylus');
 const nib = require('nib');
 const fs = require('fs');
 
+if (!process.env.GITLAB_PRIVATE_TOKEN) {
+  throw new Error('Please set `GITLAB_PRIVATE_TOKEN`');
+}
+
 const index = require('./routes/index');
 
 const app = express();
@@ -23,7 +27,7 @@ app.use(cookieParser());
 app.use(function (req, res, next) {
   // Hijack the render function to insert a `pg`
   res._render = res.render;
-  res.render = function(...params) {
+  res.render = function (...params) {
     res.locals.pg = params[0];
     return res._render.apply(this, params);
   };

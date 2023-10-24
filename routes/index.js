@@ -19,14 +19,14 @@ router.get("/", (req, res) => {
  */
 
 router.post("/run", async (req, res, next) => {
-  const repo = `../repositories/${req.body.repo}`;
+  const repo = `root/${req.body.repo}`;
   const script = require(`../run/${req.body.script}`);
   const out = await script(repo, req.body.branch, req.body.data);
   res.json(out);
 });
 
 router.post("/pull/:repo", async (req, res, next) => {
-  const repo = `../repositories/${req.params.repo}`;
+  const repo = `root/${req.params.repo}`;
   const script = require(`../run/pull`);
   const out = await script(repo, 'main');
   res.json(out);
